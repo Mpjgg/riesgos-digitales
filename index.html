@@ -231,13 +231,14 @@
   .qr-label { font-family: var(--f-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.4); }
   .qr-title { font-family: var(--f-head); font-size: 20px; font-weight: 700; color: white; text-align: center; line-height: 1.3; }
   .qr-placeholder {
-    width: 200px; height: 200px; border-radius: 16px;
-    background: rgba(255,255,255,.06); border: 2px dashed rgba(255,255,255,.15);
+    width: 220px; height: 220px; border-radius: 16px;
+    background: white; border: none;
     display: flex; align-items: center; justify-content: center;
+    padding: 14px; overflow: hidden;
     font-size: 13px; color: rgba(255,255,255,.25); font-family: var(--f-mono);
-    text-align: center; line-height: 1.5; overflow: hidden;
+    text-align: center; line-height: 1.5;
   }
-  .qr-placeholder img { width: 100%; height: 100%; object-fit: contain; border-radius: 14px; }
+  .qr-placeholder img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .qr-desc { font-size: 13px; color: rgba(255,255,255,.5); text-align: center; line-height: 1.55; }
 
   /* ─── RESPONSIVE ─── */
@@ -503,7 +504,8 @@
       <div class="qr-label">Herramienta diagnóstica 01</div>
       <div class="qr-title">Mapa de riesgos digitales</div>
       <div class="qr-placeholder" id="qr1-wrap">
-      <img src="qr1.png" alt="QR 1">
+        <!-- Reemplazá este texto con una etiqueta img apuntando a tu QR -->
+        <!-- <img src="qr1.png" alt="QR 1"> -->
         QR 1
       </div>
       <div class="qr-desc">Escaneá con tu celular · Anónimo · 5 minutos</div>
@@ -513,7 +515,8 @@
       <div class="qr-label">Herramienta diagnóstica 02</div>
       <div class="qr-title">Conocimientos, percepciones y experiencias</div>
       <div class="qr-placeholder" id="qr2-wrap">
-       <img src="qr2.png" alt="QR 2">
+        <!-- Reemplazá este texto con una etiqueta img apuntando a tu QR -->
+        <!-- <img src="qr2.png" alt="QR 2"> -->
         QR 2
       </div>
       <div class="qr-desc">Escaneá con tu celular · Anónimo · 5 minutos</div>
