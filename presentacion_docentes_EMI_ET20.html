@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riesgos Digitales · ET N°20</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul:    #1E4D8C;
+    --azul2:   #2560AA;
+    --verde:   #2E8B57;
+    --naranja: #E87722;
+    --morado:  #6B3FA0;
+    --rojo:    #C0392B;
+    --white:   #ffffff;
+    --f-head:  'Fraunces', Georgia, serif;
+    --f-body:  'DM Sans', sans-serif;
+    --f-mono:  'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--f-body);
+    background: #0d0f14;
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ─── PROGRESS BAR ─── */
+  #progress-bar {
+    position: fixed; top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--naranja), var(--morado));
+    width: 0%; z-index: 1000;
+    transition: width .15s ease;
+  }
+
+  /* ─── TOP NAV ─── */
+  #topnav {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 52px;
+    background: rgba(13,15,20,.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,.07);
+    display: flex; align-items: center;
+    padding: 0 32px; z-index: 999; gap: 6px;
+  }
+
+  .nav-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,.2); cursor: pointer;
+    transition: all .2s ease; border: none; outline: none;
+  }
+  .nav-dot:hover { background: rgba(255,255,255,.5); transform: scale(1.4); }
+  .nav-dot.active { background: var(--naranja); transform: scale(1.5); }
+
+  .nav-label {
+    margin-left: auto; font-family: var(--f-mono);
+    font-size: 11px; color: rgba(255,255,255,.35); letter-spacing: .06em;
+  }
+
+  /* ─── SLIDE BASE ─── */
+  .slide {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: center; padding: 80px 8vw 60px;
+    position: relative; overflow: hidden;
+  }
+  .slide + .slide { border-top: 1px solid rgba(255,255,255,.05); }
+  .slide.dark  { background: #0d0f14; }
+  .slide.navy  { background: #0e1a2e; }
+  .slide.deep  { background: #110d1e; }
+  .slide.dark2 { background: #0a0f0a; }
+  .slide.mid   { background: #101318; }
+
+  .slide::before {
+    content: ''; position: absolute;
+    width: 600px; height: 600px; border-radius: 50%;
+    filter: blur(120px); opacity: .12; pointer-events: none;
+  }
+  .slide.navy::before  { background: var(--azul);   top: -200px; right: -200px; }
+  .slide.deep::before  { background: var(--morado); bottom: -200px; left: -100px; }
+  .slide.dark2::before { background: var(--verde);  bottom: -200px; right: -100px; }
+  .slide.mid::before   { background: var(--rojo);   top: -100px; left: -100px; }
+
+  /* ─── TYPE ─── */
+  .slide-kicker {
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: .14em;
+    text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 16px;
+  }
+  .slide-title {
+    font-family: var(--f-head); font-size: clamp(36px, 5vw, 72px);
+    font-weight: 700; line-height: 1.08; color: var(--white); margin-bottom: 20px;
+  }
+  .slide-title span { font-style: italic; }
+  .slide-lead {
+    font-size: clamp(15px, 1.6vw, 19px); color: rgba(255,255,255,.6);
+    max-width: 640px; line-height: 1.7; margin-bottom: 48px;
+  }
+
+  .accent-line { width: 48px; height: 3px; border-radius: 2px; margin-bottom: 24px; }
+  .accent-line.naranja { background: var(--naranja); }
+  .accent-line.azul    { background: var(--azul2); }
+  .accent-line.verde   { background: var(--verde); }
+  .accent-line.morado  { background: var(--morado); }
+  .accent-line.rojo    { background: var(--rojo); }
+
+  /* ─── BIG STAT GRID ─── */
+  .big-stat-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px; margin-bottom: 16px;
+  }
+  .big-stat {
+    background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+    border-radius: 16px; padding: 28px 24px; position: relative;
+    overflow: hidden; transition: border-color .2s;
+  }
+  .big-stat:hover { border-color: rgba(255,255,255,.18); }
+  .big-stat::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+  .big-stat.c-azul::before    { background: var(--azul2); }
+  .big-stat.c-verde::before   { background: var(--verde); }
+  .big-stat.c-naranja::before { background: var(--naranja); }
+  .big-stat.c-morado::before  { background: var(--morado); }
+  .big-stat.c-rojo::before    { background: var(--rojo); }
+  .big-num {
+    font-family: var(--f-head); font-size: clamp(44px, 5vw, 64px);
+    font-weight: 900; line-height: 1; margin-bottom: 8px;
+  }
+  .big-stat.c-azul    .big-num { color: #60AFFF; }
+  .big-stat.c-verde   .big-num { color: #5DD896; }
+  .big-stat.c-naranja .big-num { color: #FFAA55; }
+  .big-stat.c-morado  .big-num { color: #C49AFF; }
+  .big-stat.c-rojo    .big-num { color: #FF7A6A; }
+  .big-stat-label { font-size: 13px; color: rgba(255,255,255,.55); line-height: 1.45; }
+  .big-stat-source { font-family: var(--f-mono); font-size: 9px; color: rgba(255,255,255,.2); margin-top: 10px; letter-spacing: .05em; }
+
+  /* ─── HIGHLIGHT BOX ─── */
+  .hl-box {
+    background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1);
+    border-left: 4px solid; border-radius: 0 12px 12px 0;
+    padding: 20px 24px; margin-bottom: 20px;
+    font-size: 15px; line-height: 1.65; color: rgba(255,255,255,.8);
+  }
+  .hl-box strong { color: white; }
+  .hl-box em { font-style: italic; color: rgba(255,255,255,.9); }
+  .hl-box.naranja { border-left-color: var(--naranja); }
+  .hl-box.verde   { border-left-color: var(--verde); }
+  .hl-box.azul    { border-left-color: var(--azul2); }
+  .hl-box.morado  { border-left-color: var(--morado); }
+
+  /* ─── HERO ─── */
+  #slide-0 { background: #0d0f14; justify-content: flex-end; padding-bottom: 10vh; }
+  #slide-0 .hero-title {
+    font-family: var(--f-head); font-size: clamp(48px, 7vw, 96px);
+    font-weight: 900; line-height: 1.0; color: white; margin-bottom: 24px;
+  }
+  #slide-0 .hero-title em { font-style: italic; color: rgba(255,255,255,.45); }
+  .hero-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+  .hero-pill {
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: .07em;
+    padding: 6px 14px; border-radius: 30px;
+    border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.55);
+  }
+  #slide-0::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 60px 60px; pointer-events: none;
+    mask-image: radial-gradient(ellipse at 50% 50%, black 30%, transparent 75%);
+  }
+
+  /* ─── BAR CHART ─── */
+  .bar-chart-pres { margin: 20px 0; }
+  .bar-row-pres { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .brl { font-size: 14px; color: rgba(255,255,255,.7); width: 220px; flex-shrink: 0; }
+  .brl strong { color: white; }
+  .bar-track-pres {
+    flex: 1; height: 16px; background: rgba(255,255,255,.07);
+    border-radius: 8px; overflow: hidden;
+  }
+  .bar-fill-pres {
+    height: 100%; border-radius: 8px; width: 0;
+    transition: width 1.4s cubic-bezier(.4,0,.2,1); position: relative;
+  }
+  .bar-fill-pres::after {
+    content: attr(data-label); position: absolute; right: 10px; top: 50%;
+    transform: translateY(-50%); font-family: var(--f-mono);
+    font-size: 11px; font-weight: 500; color: rgba(255,255,255,.9); white-space: nowrap;
+  }
+
+  /* ─── RISK GRID ─── */
+  .risk-grid-pres { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .risk-card-pres {
+    background: rgba(255,255,255,.035); border: 1px solid rgba(255,255,255,.07);
+    border-radius: 14px; padding: 18px 20px; cursor: pointer; transition: all .2s ease;
+  }
+  .risk-card-pres:hover { background: rgba(255,255,255,.065); transform: translateY(-2px); }
+  .risk-card-pres.open  { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.18); }
+  .rp-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .rp-icon { font-size: 22px; width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.06); }
+  .rp-title { font-size: 14px; font-weight: 700; color: white; }
+  .rp-level { font-family: var(--f-mono); font-size: 9px; letter-spacing: .06em; padding: 2px 7px; border-radius: 20px; margin-top: 2px; display: inline-block; }
+  .rp-level.alto      { background: rgba(192,57,43,.2);  color: #FF7A6A; }
+  .rp-level.medio-alt { background: rgba(232,119,34,.2); color: #FFAA55; }
+  .rp-level.creciente { background: rgba(107,63,160,.2); color: #C49AFF; }
+  .rp-stat { font-family: var(--f-head); font-size: 32px; font-weight: 900; color: rgba(255,255,255,.9); margin-bottom: 4px; }
+  .rp-desc { font-size: 12px; color: rgba(255,255,255,.45); line-height: 1.45; }
+  .rp-detail { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.08); }
+  .risk-card-pres.open .rp-detail { display: block; }
+  .rp-detail ul { list-style: none; }
+  .rp-detail ul li { font-size: 12px; color: rgba(255,255,255,.55); padding: 4px 0 4px 14px; position: relative; line-height: 1.45; }
+  .rp-detail ul li::before { content: '→'; position: absolute; left: 0; color: var(--naranja); }
+  .rp-law { font-family: var(--f-mono); font-size: 9px; background: rgba(255,255,255,.07); color: rgba(255,255,255,.5); padding: 3px 8px; border-radius: 20px; display: inline-block; margin: 3px 2px 0; }
+
+  /* ─── QR SECTION ─── */
+  .qr-section { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 16px; }
+
+  @media (max-width: 600px) { .qr-section { grid-template-columns: 1fr; } }
+
+  .qr-card {
+    background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 20px; padding: 32px; display: flex;
+    flex-direction: column; align-items: center; gap: 20px;
+  }
+  .qr-card:first-child { border-color: rgba(37,96,170,.5); }
+  .qr-card:last-child  { border-color: rgba(232,119,34,.5); }
+
+  .qr-label { font-family: var(--f-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.4); }
+  .qr-title { font-family: var(--f-head); font-size: 20px; font-weight: 700; color: white; text-align: center; line-height: 1.3; }
+  .qr-placeholder {
+    width: 200px; height: 200px; border-radius: 16px;
+    background: rgba(255,255,255,.06); border: 2px dashed rgba(255,255,255,.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: rgba(255,255,255,.25); font-family: var(--f-mono);
+    text-align: center; line-height: 1.5; overflow: hidden;
+  }
+  .qr-placeholder img { width: 100%; height: 100%; object-fit: contain; border-radius: 14px; }
+  .qr-desc { font-size: 13px; color: rgba(255,255,255,.5); text-align: center; line-height: 1.55; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 720px) {
+    .big-stat-grid { grid-template-columns: 1fr 1fr; }
+    .slide { padding: 70px 6vw 50px; }
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<nav id="topnav">
+  <button class="nav-dot active" data-target="slide-0" onclick="scrollTo('slide-0')"></button>
+  <button class="nav-dot" data-target="slide-1" onclick="scrollTo('slide-1')"></button>
+  <button class="nav-dot" data-target="slide-2" onclick="scrollTo('slide-2')"></button>
+  <button class="nav-dot" data-target="slide-3" onclick="scrollTo('slide-3')"></button>
+  <button class="nav-dot" data-target="slide-4" onclick="scrollTo('slide-4')"></button>
+  <button class="nav-dot" data-target="slide-5" onclick="scrollTo('slide-5')"></button>
+  <span class="nav-label">ET N°20 · FPD: María Paula Jaramillo Gómez</span>
+</nav>
+
+<!-- ══ SLIDE 0 · PORTADA ══ -->
+<section class="slide dark" id="slide-0">
+  <div class="hero-title">
+    Riesgos digitales<br>en <em>nuestros</em><br>estudiantes
+  </div>
+  <div class="hero-pills">
+    <span class="hero-pill">ET N°20 D.E.20</span>
+    <span class="hero-pill">Secundaria técnica · CABA</span>
+    <span class="hero-pill">Kids Online ARG 2025</span>
+    <span class="hero-pill">Mayo 2026</span>
+  </div>
+</section>
+
+<!-- ══ SLIDE 1 · DATOS CLAVE ══ -->
+<section class="slide navy" id="slide-1">
+  <div class="slide-kicker">El panorama en números</div>
+  <div class="accent-line azul"></div>
+  <h2 class="slide-title">El mundo digital de <span>nuestros estudiantes</span></h2>
+  <p class="slide-lead">Kids Online Argentina 2025 · UNICEF/UNESCO · 5.910 NNyA en 20 jurisdicciones</p>
+
+  <div class="big-stat-grid">
+    <div class="big-stat c-naranja">
+      <div class="big-num"><span class="counter" data-target="9.6" data-dec="1">0</span><span style="font-size:.5em;opacity:.6"> años</span></div>
+      <div class="big-stat-label">Edad promedio del primer celular con internet</div>
+      <div class="big-stat-source">Kids Online ARG 2025</div>
+    </div>
+    <div class="big-stat c-rojo">
+      <div class="big-num"><span class="counter" data-target="46">0</span><span style="font-size:.5em;opacity:.6">%</span></div>
+      <div class="big-stat-label">Perciben uso problemático propio de pantallas</div>
+      <div class="big-stat-source">Kids Online ARG 2025</div>
+    </div>
+    <div class="big-stat c-azul">
+      <div class="big-num"><span class="counter" data-target="24">0</span><span style="font-size:.5em;opacity:.6">%</span></div>
+      <div class="big-stat-label">Estudiantes de CABA que apostaron online alguna vez</div>
+      <div class="big-stat-source">Defensoría Pueblo CABA 2024</div>
+    </div>
+    <div class="big-stat c-morado">
+      <div class="big-num"><span class="counter" data-target="47">0</span><span style="font-size:.5em;opacity:.6">%</span></div>
+      <div class="big-stat-label">Con contacto online con desconocidos</div>
+      <div class="big-stat-source">Kids Online ARG 2025</div>
+    </div>
+    <div class="big-stat c-verde">
+      <div class="big-num"><span class="counter" data-target="11">0</span><span style="font-size:.5em;opacity:.6">%</span></div>
+      <div class="big-stat-label">Recurriría a un <strong style="color:#5DD896">docente</strong> ante un problema digital</div>
+      <div class="big-stat-source">Kids Online ARG 2025</div>
+    </div>
+    <div class="big-stat c-naranja">
+      <div class="big-num"><span class="counter" data-target="96">0</span><span style="font-size:.5em;opacity:.6">%</span></div>
+      <div class="big-stat-label">Tiene acceso a internet en el hogar</div>
+      <div class="big-stat-source">Kids Online ARG 2025</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SLIDE 2 · ¿CON QUIÉN HABLAN? ══ -->
+<section class="slide dark" id="slide-2">
+  <div class="slide-kicker">¿Con quién hablan?</div>
+  <div class="accent-line naranja"></div>
+  <h2 class="slide-title">Cuando algo les pasa <span>en línea</span></h2>
+  <p class="slide-lead">Ante un problema digital, la primera persona que llaman rara vez trabaja en una escuela.</p>
+
+  <div class="bar-chart-pres" id="bars">
+    <div class="bar-row-pres">
+      <div class="brl">Amigos y pares</div>
+      <div class="bar-track-pres"><div class="bar-fill-pres" data-w="62" data-label="62%" style="background:linear-gradient(90deg,#2560AA,#60AFFF)"></div></div>
+    </div>
+    <div class="bar-row-pres">
+      <div class="brl">Familia</div>
+      <div class="bar-track-pres"><div class="bar-fill-pres" data-w="41" data-label="41%" style="background:linear-gradient(90deg,#2E8B57,#5DD896)"></div></div>
+    </div>
+    <div class="bar-row-pres">
+      <div class="brl">Nadie</div>
+      <div class="bar-track-pres"><div class="bar-fill-pres" data-w="28" data-label="28%" style="background:linear-gradient(90deg,#555,#888)"></div></div>
+    </div>
+    <div class="bar-row-pres">
+      <div class="brl"><strong>Docentes</strong></div>
+      <div class="bar-track-pres"><div class="bar-fill-pres" data-w="11" data-label="11%" style="background:linear-gradient(90deg,#C0392B,#FF7A6A)"></div></div>
+    </div>
+  </div>
+
+  <div class="hl-box verde" style="margin-top:32px;max-width:680px;">
+    Con acompañamiento adulto activo, la conducta riesgosa baja del <strong>42% al 29%</strong>. La escuela es el único espacio institucional que puede llegar sistemáticamente a quienes no tienen ese acompañamiento en casa.
+  </div>
+
+  <div class="hl-box naranja" style="max-width:680px;">
+    En el nivel socioeconómico al que pertenece nuestra escuela, el celular suele ser el <strong>único dispositivo disponible</strong>. Uso fragmentado, móvil, sin configuraciones revisadas.
+  </div>
+</section>
+
+<!-- ══ SLIDE 3 · LOS 8 RIESGOS ══ -->
+<section class="slide deep" id="slide-3">
+  <div class="slide-kicker">Diagnóstico por eje</div>
+  <div class="accent-line morado"></div>
+  <h2 class="slide-title">Los <span>8 riesgos</span> prioritarios</h2>
+  <p class="slide-lead">Datos de Argentina 2024–2025. Hacé clic en cada tarjeta para ver más.</p>
+
+  <div class="risk-grid-pres">
+
+    <div class="risk-card-pres" onclick="this.classList.toggle('open')">
+      <div class="rp-header"><div class="rp-icon">💬</div><div><div class="rp-title">Ciberbullying</div><span class="rp-level alto">ALTO</span></div></div>
+      <div class="rp-stat"><span class="counter" data-target="29">0</span>%</div>
+      <div class="rp-desc">recibió mensajes ofensivos (Kids Online 2025)</div>
+      <div class="rp-detail">
+        <ul>
+          <li>3 de cada 10 sufrieron ciberbullying alguna vez (U-Report 2024)</li>
+          <li>77% de episodios ocurren dentro de la escuela</li>
+          <li>38% se desarrolla en redes sociales</li>
+        </ul>
+        <div style="margin-top:10px;"><span class="rp-law">Ley 26.892</span><span class="rp-law">Ley 5.738 CABA</span></div>
+      </div>
+    </div>
+
+    <div class="risk-card-pres" onclick="this.classList.toggle('open')">
+      <div class="rp-header"><div class="rp-icon">🎯</div><div><div class="rp-title">Grooming</div><span class="rp-level alto">ALTO</span></div></div>
+      <div class="rp-stat"><span class="counter" data-target="25">0</span>%</div>
+      <div class="rp-desc">recibió solicitud de imágenes íntimas</div>
+      <div class="rp-detail">
+        <ul>
+          <li>50% de NNyA argentinos habla con desconocidos online</li>
+          <li>107.900 reportes CyberTipline en Argentina (MPF CABA 2025)</li>
+          <li>55/100 no saben qué es el grooming (Red LATAM)</li>
+        </ul>
+        <div style="margin-top:10px;"><span class="rp-law">Ley 26.904</span><span class="rp-law">Ley 27.590 "Mica Ortega"</span></div>
+      </div>
+    </div>
+
+    <div class="risk-card-pres" onclick="this.classList.toggle('open')">
+      <div class="rp-header"><div class="rp-icon">🎲</div><div><div class="rp-title">Apuestas online</div><span class="rp-level alto">ALTO</span></div></div>
+      <div class="rp-stat"><span class="counter" data-target="24">0</span>%</div>
+      <div class="rp-desc">estudiantes de CABA apostó alguna vez (Defensoría 2024)</div>
+      <div class="rp-detail">
+        <ul>
+          <li>90% usa billeteras virtuales · inicio ~13 años</li>
+          <li>73% conoció las plataformas por amigos/influencers</li>
+          <li>80% del flujo va a plataformas ilegales</li>
+          <li>Sin diferencias por NSE ni zona geográfica</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="risk-card-pres" onclick="this.classList.toggle('open')">
+      <div class="rp-header"><div class="rp-icon">📱</div><div><div class="rp-title">Uso problemático</div><span class="rp-level medio-alt">MEDIO-ALTO</span></div></div>
+      <div class="rp-stat"><span class="counter" data-target="46">0</span>%</div>
+      <div class="rp-desc">percibe su propio uso como problemático</div>
+      <div class="rp-detail">
+        <ul>
+          <li>Aumento documentado de ansiedad y depresión adolescente</li>
+          <li>Algoritmo TikTok: "protección ínfima" en ARG (Amnistía Int.)</li>
+          <li>Exposición a contenidos de autolesión y TCA</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="risk-card-pres" onclick="this.classList.toggle('open')">
+      <div class="rp-header"><div class="rp-icon">🤖</div><div><div class="rp-title">Deepfakes e IA</div><span class="rp-level creciente">CRECIENTE</span></div></div>
+      <div class="rp-stat">+<span class="counter" data-target="360">0</span>%</div>
+      <div class="rp-desc">aumento de imágenes sexuales de menores generadas con IA (Europol)</div>
+      <div class="rp-detail">
+        <ul>
+          <li>Casos judicializados en Córdoba, San Martín, Chaco, Río Negro</li>
+          <li>99% de deepfakes pornográficos afectan a mujeres</li>
+          <li>Sin tipificación autónoma en el CP argentino (aún)</li>
+        </ul>
+        <div style="margin-top:10px;"><span class="rp-law">Ley 27.736 "Olimpia"</span></div>
+      </div>
+    </div>
+
+    <div class="risk-card-pres" onclick="this.classList.toggle('open')">
+      <div class="rp-header"><div class="rp-icon">📸</div><div><div class="rp-title">Sexting / Sextorsión</div><span class="rp-level medio-alt">MEDIO-ALTO</span></div></div>
+      <div class="rp-stat">7/10</div>
+      <div class="rp-desc">víctimas de violencia sexual digital son niñas</div>
+      <div class="rp-detail">
+        <ul>
+          <li>45% de denuncias de violencia sexual contra NNyA proviene de CABA</li>
+          <li>Alta prevalencia de difusión no consentida (Faro Digital)</li>
+        </ul>
+        <div style="margin-top:10px;"><span class="rp-law">Ley 27.736 "Olimpia"</span><span class="rp-law">Ley 26.485</span></div>
+      </div>
+    </div>
+
+    <div class="risk-card-pres" onclick="this.classList.toggle('open')">
+      <div class="rp-header"><div class="rp-icon">🔒</div><div><div class="rp-title">Privacidad e identidad</div><span class="rp-level medio-alt">MEDIO</span></div></div>
+      <div class="rp-stat"><span class="counter" data-target="60">0</span>%</div>
+      <div class="rp-desc">cree que el primer resultado de búsqueda es siempre correcto</div>
+      <div class="rp-detail">
+        <ul>
+          <li>Celular compartido entre hermanos en hogares populares</li>
+          <li>Configuraciones de privacidad nunca revisadas</li>
+          <li>Phishing dirigido a jóvenes: sin estadística oficial ARG</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="risk-card-pres" onclick="this.classList.toggle('open')">
+      <div class="rp-header"><div class="rp-icon">📺</div><div><div class="rp-title">Pornografía / Desinformación</div><span class="rp-level medio-alt">MEDIO-ALTO</span></div></div>
+      <div class="rp-stat">11–12</div>
+      <div class="rp-desc">años: primer contacto con pornografía (SAP Argentina)</div>
+      <div class="rp-detail">
+        <ul>
+          <li>Argentina: 9° país consumidor YouPorn 2023</li>
+          <li>88% de videos mainstream incluye violencia física (Save the Children)</li>
+          <li>Sin estadística oficial argentina para menores</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ SLIDE 4 · SECUENCIA ══ -->
+<section class="slide dark2" id="slide-4">
+  <div class="slide-kicker">Lo que viene</div>
+  <div class="accent-line verde"></div>
+  <h2 class="slide-title">Una secuencia que<br><span>vamos a construir en conjunto</span></h2>
+  <p class="slide-lead">Tenemos datos nacionales que nos dan el mapa, ahora vamos a indagar para saber qué pasa en la escuela, con los estudiantes que habitan la Técnica 20 DE 20 Carolina Muzzilli.</p>
+
+  <div class="hl-box verde" style="max-width:720px;">
+    La secuencia pedagógica por nivel se va a <strong>re-construir a partir de lo que encontremos en el diagnóstico</strong>. Los riesgos prioritarios, la forma de abordarlos y los espacios curriculares donde se integran van a depender de la información que levantemos.
+  </div>
+
+  <div class="hl-box morado" style="max-width:720px;">
+    El enfoque es trabajar desde los <strong>derechos digitales</strong> —a jugar, conectarse, expresarse— y desde ahí construir herramientas para que cada estudiante pueda habitarlos con más autonomía y menos riesgo.
+  </div>
+</section>
+
+<!-- ══ SLIDE 5 · DIAGNÓSTICO + QRs ══ -->
+<section class="slide mid" id="slide-5">
+  <div class="slide-kicker">Hoy, con ustedes</div>
+  <div class="accent-line rojo"></div>
+  <h2 class="slide-title">Empezamos<br><span>acá y ahora</span></h2>
+  <p class="slide-lead">Vamos a aplicar <strong style="color:white;">dos herramientas diagnósticas</strong> hoy mismo, con todos los adultos que habitamos la escuela: docentes, conducción, preceptores... Lo que respondamos nos da la primera capa de datos para construir la secuencia desde este contexto.</p>
+
+  <div class="qr-section">
+
+    <div class="qr-card">
+      <div class="qr-label">Herramienta diagnóstica 01</div>
+      <div class="qr-title">Mapa de riesgos digitales</div>
+      <div class="qr-placeholder" id="qr1-wrap">
+        <!-- Reemplazá este texto con una etiqueta img apuntando a tu QR -->
+        <!-- <img src="qr1.png" alt="QR 1"> -->
+        QR 1
+      </div>
+      <div class="qr-desc">Escaneá con tu celular · Anónimo · 5 minutos</div>
+    </div>
+
+    <div class="qr-card">
+      <div class="qr-label">Herramienta diagnóstica 02</div>
+      <div class="qr-title">Conocimientos, percepciones y experiencias</div>
+      <div class="qr-placeholder" id="qr2-wrap">
+        <!-- Reemplazá este texto con una etiqueta img apuntando a tu QR -->
+        <!-- <img src="qr2.png" alt="QR 2"> -->
+        QR 2
+      </div>
+      <div class="qr-desc">Escaneá con tu celular · Anónimo · 5 minutos</div>
+    </div>
+
+  </div>
+
+
+</section>
+
+<script>
+/* ── PROGRESS + NAV DOTS ── */
+const slides = document.querySelectorAll('.slide');
+const dots   = document.querySelectorAll('.nav-dot');
+const prog   = document.getElementById('progress-bar');
+
+function updateNav() {
+  const scrollTop = window.scrollY;
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  prog.style.width = (scrollTop / docH * 100) + '%';
+  let current = 0;
+  slides.forEach((s, i) => {
+    if (scrollTop >= s.offsetTop - window.innerHeight / 2) current = i;
+  });
+  dots.forEach((d, i) => d.classList.toggle('active', i === current));
+}
+
+window.addEventListener('scroll', updateNav);
+
+function scrollTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ── COUNTER ANIMATION ── */
+const counters = document.querySelectorAll('.counter');
+const observed = new Set();
+
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !observed.has(entry.target)) {
+      observed.add(entry.target);
+      animateCounter(entry.target);
+    }
+  });
+}, { threshold: 0.4 });
+
+counters.forEach(c => io.observe(c));
+
+function animateCounter(el) {
+  const target    = parseFloat(el.dataset.target);
+  const dec       = parseInt(el.dataset.dec || '0');
+  const duration  = 1800;
+  const step      = 16;
+  const increment = target / (duration / step);
+  let current = 0;
+  const timer = setInterval(() => {
+    current += increment;
+    if (current >= target) { current = target; clearInterval(timer); }
+    el.textContent = dec > 0 ? current.toFixed(dec) : Math.floor(current);
+  }, step);
+}
+
+/* ── BAR CHART ── */
+let barsAnimated = false;
+const barIO = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !barsAnimated) {
+      barsAnimated = true;
+      setTimeout(() => {
+        document.querySelectorAll('.bar-fill-pres').forEach(bar => {
+          bar.style.width = bar.getAttribute('data-w') + '%';
+        });
+      }, 300);
+    }
+  });
+}, { threshold: 0.3 });
+
+barIO.observe(document.getElementById('bars'));
+</script>
+</body>
+</html>
